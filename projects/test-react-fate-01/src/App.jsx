@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SERVANTSNAME, SERVANTS1 } from "./constants";
+import { SERVANTS1 } from "./constants";
 import { Board } from "./components/Board";
 import { WinnerModal } from "./components/WinnerModal";
 
