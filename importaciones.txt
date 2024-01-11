@@ -1,0 +1,7 @@
+// Libreria para lanzar confetti
+npm install canvas-confetti -E
+
+/**
+import confetti from "canvas-confetti"
+confetti()
+**/

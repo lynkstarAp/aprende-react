@@ -5,7 +5,6 @@ export function WinnerModal({ winner, resetGame }) {
         <section className='winner'>
             <div className="text">
                 <h2>Ganaste</h2>
-                {/* <header className='win'>Holi</header> */}
                 <footer>
                     <button onClick={resetGame}>Empezar de nuevo</button>
                 </footer>

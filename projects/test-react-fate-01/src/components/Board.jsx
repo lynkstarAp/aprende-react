@@ -1,18 +1,27 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card } from "./Card"
 
-export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
+
+
+export function Board({ orderImage, arrServants, cards, servants, peers, setPeers, winner, setWinner }) {
+	const [isClickAvailable, setIsClickAvailable] = useState(false)
 	const [turn, setTurn] = useState(0)
 	const [borderColor, setBorderColor] = useState(0) // 0 → reset 1 → azul 2 → verde
+	const [imagesCard2, setImagesCard2] = useState()
+
+	useEffect(() => {
+		setImagesCard2(orderImage(arrServants, peers))
+	}, [servants])
+
 	if (peers == null) return null
-	// console.log({ peers });
 
 	const chekcTurn = () => {
 		if (turn == 0) {
 			setTurn(1)
 		} else {
 			setTurn(0)
+			setIsClickAvailable(true)
 			setTimeout(() => {
 				checkIsPeer(null, true)
 			}, 500);
@@ -20,6 +29,7 @@ export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
 	}
 
 	const checkIsPeer = (index, isNewTurn) => {
+		if (isClickAvailable) return
 		const newPeers = [...peers]
 		setTurn(0)
 
@@ -30,7 +40,7 @@ export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
 			const [a, b, isCheckA, isCheckB, isComplete] = cardSelected;
 			if (!isComplete) setWinner(false)
 			if (isNewTurn) {
-				// console.log('limpiando turno');
+				setIsClickAvailable(!isNewTurn)
 				if (!isComplete) {
 					newPeers[indx][2] = false
 					newPeers[indx][3] = false
@@ -70,8 +80,21 @@ export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
 			console.log('aqui cuando se gana el game');
 		}
 		setPeers(newPeers)
-		// console.log(borderColor);
 		if (!isNewTurn) return borderColor
+	}
+
+	const checkCurrentCard = (index) => {
+		let tmpVal = 0
+		peers.forEach((key) => {
+			const [a, b, aa, bb, t] = key
+			if (a == index) {
+				tmpVal = t ? 2 : aa && 1
+			}
+			if (b == index) {
+				tmpVal = t ? 2 : bb && 1
+			}
+		});
+		return tmpVal
 	}
 
 	return (
@@ -82,15 +105,10 @@ export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
 						<Card
 							key={index}
 							index={index}
-							servant={servant}
 							peers={peers}
-							setPeers={setPeers}
-
-							isSelect={false}
-							isComplete={false}
-
-							chekcTurn={chekcTurn}
 							checkIsPeer={checkIsPeer}
+							img={imagesCard2}
+							checkCurrentCard={checkCurrentCard}
 						/>
 					)
 				})
@@ -98,41 +116,3 @@ export function Board({ cards, servant, peers, setPeers, winner, setWinner }) {
 		</section>
 	)
 }
-
-/*
-
-peers.map((key) => {
-					return (
-						<>
-							<Card
-								key={key[0]}
-								index={key[0]}
-								servant={servant}
-								peers={peers}
-								setPeers={setPeers}
-
-								isSelect={key[2]}
-								isComplete={key[4]}
-
-								chekcTurn={chekcTurn}
-								checkIsPeer={checkIsPeer}
-							/>
-							<Card
-								key={key[1]}
-								index={key[1]}
-								servant={servant}
-								peers={peers}
-								setPeers={setPeers}
-
-								isSelect={key[3]}
-								isComplete={key[4]}
-
-								chekcTurn={chekcTurn}
-								checkIsPeer={checkIsPeer}
-							/>
-
-						</>
-					)
-				})
-
-				*/

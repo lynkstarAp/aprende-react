@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 import { SERVANTS1 } from "./constants";
 import { Board } from "./components/Board";
 import { WinnerModal } from "./components/WinnerModal";
-
-// const STATUS = {
-// 	"a": "face",
-// 	"b": "cross",
-// 	"c": "resolved"
-// }
-// const tst = [
-// 	{ index: "", name: "", img: "", peers: "" }
-// ]
+import confetti from "canvas-confetti";
 
 export default function App() {
 	const [numberCard, setNumberCard] = useState(4);
@@ -19,26 +11,30 @@ export default function App() {
 	const [peers, setPeers] = useState(null);
 	const [winner, setWinner] = useState(false);
 
+	const [arrServants, setArrServants] = useState()
 
 	useEffect(() => {
+		if (winner) {
+			confetti()
+			return
+		}
 		setNumberCard(4)
 		setServant(getServantsRandom(SERVANTS1, numberCard))
 		setPeers(getArrRandom(numberCard))
+		setCards(Array(numberCard * 2).fill(null))
 
-	}, [cards, numberCard])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [numberCard, winner])
 
 	const resetGame = () => {
 		setWinner(false)
-		setCards(Array(numberCard * 2).fill(null))
 		setPeers(getArrRandom(numberCard))
-		getServantsRandom(SERVANTS1, numberCard)
+		setServant(getServantsRandom(SERVANTS1, numberCard))
 	}
 
-	// const getRandomNumber = () => {
-	// 	return Math.floor(Math.random() * numberCard);
-	// }
-
-	const getServantsRandom = (json, cantidad) => {
+	// let kjson = 0
+	const getServantsRandom = (json, cantidad, isSubKey = false) => {
+		// kjson = ind
 		// Obtener las claves del JSON
 		const keys = Object.keys(json);
 		// Mezclar las claves
@@ -46,12 +42,27 @@ export default function App() {
 		// Tomar las primeras 'cantidad' claves del JSON mezclado
 		const randomKeys = mexKeys.slice(0, cantidad);
 		// Construir un nuevo objeto con los elementos seleccionados
-		const randomServant = {};
+		const randomServant = [];
 		randomKeys.forEach((key) => {
 			randomServant[key] = json[key];
+			if (!isSubKey) {
+				randomServant[key] = getServantsRandom(json[key], 2, true)
+			}
 		});
+		if (!isSubKey) {
+			let x = 0
+			let arrTst = []
+			randomKeys.map((arr) => {
+				randomServant[arr].map(val => {
+					arrTst[x] = [arr, val]
+					x++
+				})
+			})
+			setArrServants(arrTst)
+		}
 		return randomServant;
 	}
+
 	const getArrRandom = (lngNumber) => {
 		const arryPeers = [];
 		const numAvailable = Array.from({ length: lngNumber * 2 }, (_, index) => index);
@@ -65,23 +76,35 @@ export default function App() {
 		return arryPeers;
 	}
 
-	// const toggleState = (id) => {
-	// 	setComponentStates((prevStates) => {
-	// 		return {
-	// 			...prevStates,
-	// 			[id]: !prevStates[id],
-	// 		};
-	// 	});
-	// };
+	const orderImage = (arrTst, peers) => {
+		let x = 0
+		let arr = []
+		if (peers == null) return
+		peers.map(arrp => {
+			const [a, b] = arrp
+			arr[a] = arrTst[x]
+			arr[b] = arrTst[x + 1]
+			x = x + 2
+		})
+		return arr
+	}
 
-	// console.log(getServantsRandom(SERVANTS1, 5));
-
-	return (<>
-		<main className="board">
-			<h2>Test</h2>
-			<Board cards={cards} servant={servant} peers={peers} setPeers={setPeers} winner={winner} setWinner={setWinner} />
-		</main>
-		<WinnerModal winner={winner} resetGame={resetGame} />
-	</>
+	return (
+		<>
+			<main className="board">
+				<h2>Memorama</h2>
+				<Board
+					arrServants={arrServants}
+					orderImage={orderImage}
+					cards={cards}
+					servants={servant}
+					peers={peers}
+					setPeers={setPeers}
+					winner={winner}
+					setWinner={setWinner}
+				/>
+			</main>
+			<WinnerModal winner={winner} resetGame={resetGame} />
+		</>
 	);
 }
