@@ -4,6 +4,8 @@ import { Board } from "./components/Board";
 import { WinnerModal } from "./components/WinnerModal";
 import confetti from "canvas-confetti";
 
+import { getArrRandom } from "./logic/board";
+
 export default function App() {
 	const [numberCard, setNumberCard] = useState(4);
 	const [cards, setCards] = useState(Array(numberCard * 2).fill(null))
@@ -32,7 +34,6 @@ export default function App() {
 		setServant(getServantsRandom(SERVANTS1, numberCard))
 	}
 
-	// let kjson = 0
 	const getServantsRandom = (json, cantidad, isSubKey = false) => {
 		// kjson = ind
 		// Obtener las claves del JSON
@@ -63,31 +64,9 @@ export default function App() {
 		return randomServant;
 	}
 
-	const getArrRandom = (lngNumber) => {
-		const arryPeers = [];
-		const numAvailable = Array.from({ length: lngNumber * 2 }, (_, index) => index);
-		while (numAvailable.length > 0) {
-			const index1 = Math.floor(Math.random() * numAvailable.length);
-			const num1 = numAvailable.splice(index1, 1)[0];
-			const index2 = Math.floor(Math.random() * numAvailable.length);
-			const num2 = numAvailable.splice(index2, 1)[0];
-			arryPeers.push([num1, num2, false, false, false]);
-		}
-		return arryPeers;
-	}
 
-	const orderImage = (arrTst, peers) => {
-		let x = 0
-		let arr = []
-		if (peers == null) return
-		peers.map(arrp => {
-			const [a, b] = arrp
-			arr[a] = arrTst[x]
-			arr[b] = arrTst[x + 1]
-			x = x + 2
-		})
-		return arr
-	}
+
+
 
 	return (
 		<>
@@ -95,7 +74,7 @@ export default function App() {
 				<h2>Memorama</h2>
 				<Board
 					arrServants={arrServants}
-					orderImage={orderImage}
+					// orderImage={orderImage}
 					cards={cards}
 					servants={servant}
 					peers={peers}

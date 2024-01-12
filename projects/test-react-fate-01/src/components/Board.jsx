@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react"
 import { Card } from "./Card"
 
+import { orderImage } from "../logic/board"
 
 
-export function Board({ orderImage, arrServants, cards, servants, peers, setPeers, winner, setWinner }) {
+export function Board({ arrServants, cards, servants, peers, setPeers, winner, setWinner }) {
 	const [isClickAvailable, setIsClickAvailable] = useState(false)
 	const [turn, setTurn] = useState(0)
 	const [borderColor, setBorderColor] = useState(0) // 0 → reset 1 → azul 2 → verde
