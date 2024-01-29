@@ -7,7 +7,7 @@ import confetti from "canvas-confetti";
 import { getArrRandom } from "./logic/board";
 
 export default function App() {
-	const [numberCard, setNumberCard] = useState(4);
+	const [numberCard, setNumberCard] = useState(5);
 	const [cards, setCards] = useState(Array(numberCard * 2).fill(null))
 	const [servant, setServant] = useState(null)
 	const [peers, setPeers] = useState(null);
@@ -20,7 +20,7 @@ export default function App() {
 			confetti()
 			return
 		}
-		setNumberCard(4)
+		setNumberCard(numberCard)
 		setServant(getServantsRandom(SERVANTS1, numberCard))
 		setPeers(getArrRandom(numberCard))
 		setCards(Array(numberCard * 2).fill(null))
